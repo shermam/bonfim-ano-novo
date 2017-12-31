@@ -1,4 +1,4 @@
-import { circle } from "./canvas.js";
+import { circle, rect } from "./canvas.js";
 import { touches } from "./touch.js";
 
 export function handleTouches() {
@@ -7,12 +7,11 @@ export function handleTouches() {
     }
 
     for (const touch of touches) {
-        circle(
+        rect(
             touch.pageX,
             touch.pageY,
-            touch.radiusX * 100,
-            touch.radiusX * 100,
-            touch.rotationAngle,
+            touch.radiusX * 50,
+            touch.radiusX * 50,
             'black'
         );
 

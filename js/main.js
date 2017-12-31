@@ -18,6 +18,6 @@ update(deltaTime => {
 
 });
 
-
-
-
+window.onerror = function (error) {
+    alert(JSON.stringify(error));
+}
