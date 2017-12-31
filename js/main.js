@@ -8,7 +8,7 @@ update(deltaTime => {
 })
 
 function handleMouse() {
-    circle(mouseX, mouseY, 50);
+    circle(mouseX, mouseY, 50, 50, 0);
 }
 
 function handleTouches() {
@@ -17,6 +17,13 @@ function handleTouches() {
     }
 
     for (const touch of touches) {
-        circle(touch.pageX, touch.pageY, 50);
+        circle(
+            touch.pageX,
+            touch.pageY,
+            touch.radiusX,
+            touch.radiusY,
+            touch.rotationAngle
+        );
+
     }
 }

@@ -60,14 +60,16 @@ export function rect(x, y, w, h, color = '000') {
  * 
  * @param {number} x 
  * @param {number} y 
- * @param {number} radious 
+ * @param {number} radiousX
+ * @param {number} radiousY
+ * @param {number} rotation
  * @param {string} color 
  */
-export function circle(x, y, radious, color = '000') {
+export function circle(x, y, radiousX, radiousY, rotation, color = '000') {
 
     context.beginPath();
     context.fillStyle = color;
-    context.ellipse(x, y, radious, radious, 45, 90, 90);
+    context.ellipse(x, y, radiousX, radiousY, rotation, 0, 360);
     context.fill();
     context.closePath();
 }
