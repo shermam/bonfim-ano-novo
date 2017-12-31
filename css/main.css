@@ -4,7 +4,7 @@
     padding: 0;
 }
 
-#canvas-screen{
+canvas{
     width: 100vw;
     height: 100vh;
 }
