@@ -1,14 +1,38 @@
 //@ts-check
 
-export let mouseX = 0;
-export let mouseY = 0;
-
+/**
+ * Canvas reference
+ * 
+ * @type { HTMLCanvasElement }
+ */
 const canvas = document.querySelector('canvas');
+
+/**
+ * Context reference
+ * 
+ * @type { CanvasRenderingContext2D }
+ */
 const context = canvas.getContext('2d');
 
+/**
+ * Time of the previous execution of the draw function
+ * 
+ * @type { number }
+ */
 let previousTime = 0;
+
+/**
+ * Reference to the update function to be called in draw
+ * 
+ * @type { function }
+ */
 let _update = null;
 
+/**
+ * Stores the reference to the outside update function
+ * 
+ * @param {function} updateFunction 
+ */
 export function update(updateFunction) {
     _update = updateFunction;
     draw();
@@ -32,6 +56,13 @@ export function rect(x, y, w, h, color = '000') {
     context.closePath();
 }
 
+/**
+ * 
+ * @param {number} x 
+ * @param {number} y 
+ * @param {number} radious 
+ * @param {string} color 
+ */
 export function circle(x, y, radious, color = '000') {
 
     context.beginPath();
@@ -41,12 +72,16 @@ export function circle(x, y, radious, color = '000') {
     context.closePath();
 }
 
-function draw(time) {
+/**
+ * Draws the on the canvas in a loop
+ * 
+ * @param {number} time 
+ */
+function draw(time = 0) {
 
     resizeCanvas(canvas);
     clearCanvas();
 
-    time = time || 0;
     _update(time - previousTime);
 
     previousTime = time;
@@ -54,6 +89,11 @@ function draw(time) {
     requestAnimationFrame(draw);
 }
 
+/**
+ * Sets the size of the canvas to the size of the screen
+ * 
+ * @param {HTMLCanvasElement} canvas
+ */
 function resizeCanvas(canvas) {
     if (canvas.width === innerWidth &&
         canvas.height === innerHeight) {
@@ -63,11 +103,9 @@ function resizeCanvas(canvas) {
     canvas.height = innerHeight;
 }
 
+/**
+ * Clears the canvas
+ */
 function clearCanvas() {
     context.clearRect(0, 0, canvas.width, canvas.height);
 }
-
-canvas.addEventListener('mousemove', e => {
-    mouseX = e.x;
-    mouseY = e.y;
-});
