@@ -1,0 +1,10 @@
+* {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+#canvas-screen{
+    width: 100vw;
+    height: 100vh;
+}
