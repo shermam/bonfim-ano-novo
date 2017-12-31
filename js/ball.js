@@ -1,11 +1,12 @@
 import { limit } from "./math.js";
 import { circle, rect } from "./canvas.js";
 import { touches } from "./touch.js";
+import { touchRadiusFactor } from "./handleTouches.js";
 
 export const ball = {
     x: 300,
     y: 300,
-    radius: 50,
+    radius: 100,
     vel: {
         x: 0,
         y: 0
@@ -25,7 +26,7 @@ export const ball = {
         ball.vel.y += ball.acc.y;
 
         let newX = limit(ball.x + ball.vel.x, 0, innerWidth - ball.radius);
-        let newY = limit(ball.y + ball.vel.y, 0, innerHeight - ball.radius * 2);
+        let newY = limit(ball.y + ball.vel.y, 0, innerHeight - (ball.radius + 50));
 
         if (!isTouchingX(ball, newX, touches)) {
             ball.x = newX;
@@ -33,7 +34,11 @@ export const ball = {
             resetX(this);
         }
 
-        ball.y = newY;
+        if (!isTouchingY(ball, newY, touches)) {
+            ball.y = newY;
+        } else {
+            resetY(this);
+        }
 
         if (ball.x === 0 || ball.x === innerWidth) {
             resetX(this);
@@ -77,10 +82,10 @@ function isTouchingX(ball, newX, touches) {
         const ballTop = ball.y;
         const ballBottom = ball.y + ball.radius;
 
-        const touchRight = touch.pageX + touch.radiusX * 50;
+        const touchRight = touch.pageX + touch.radiusX * touchRadiusFactor;
         const touchLeft = touch.pageX;
         const touchTop = touch.pageY;
-        const touchBottom = touch.pageY + touch.radiusX * 50;
+        const touchBottom = touch.pageY + touch.radiusX * touchRadiusFactor;
 
         if (ballBottom >= touchTop &&
             ballTop <= touchBottom) {
@@ -95,6 +100,45 @@ function isTouchingX(ball, newX, touches) {
             if (ball.acc.x < 0 &&
                 ballLeft <= touchRight &&
                 ballRight >= touchLeft
+            ) {
+                return true;
+            }
+        }
+
+    }
+}
+
+function isTouchingY(ball, newY, touches) {
+
+    if (!touches) {
+        return false;
+    }
+
+    for (const touch of touches) {
+
+        const ballRight = ball.x + ball.radius;
+        const ballLeft = ball.x;
+        const ballTop = newY;
+        const ballBottom = newY + ball.radius;
+
+        const touchRight = touch.pageX + touch.radiusX * touchRadiusFactor;
+        const touchLeft = touch.pageX;
+        const touchTop = touch.pageY;
+        const touchBottom = touch.pageY + touch.radiusX * touchRadiusFactor;
+
+        if (ballRight >= touchLeft &&
+            ballLeft <= touchRight) {
+
+            if (ball.acc.y > 0 &&
+                ballBottom >= touchTop &&
+                ballTop <= touchBottom
+            ) {
+                return true;
+            }
+
+            if (ball.acc.y < 0 &&
+                ballTop <= touchBottom &&
+                ballBottom >= touchTop
             ) {
                 return true;
             }
