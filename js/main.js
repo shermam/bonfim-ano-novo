@@ -7,14 +7,13 @@ import { drawCenario } from "./cenario.js";
 import { force } from "./mouseForce.js";
 import { drawTarget } from "./target.js";
 import { random } from "./math.js";
+import Vec from "./vec.js";
 
-const targetX = random(0, innerWidth);
-const targetY = random(0, innerHeight);
-
+const target = new Vec(random(0, innerWidth), random(0, innerHeight))
 
 update(deltaTime => {
 
-    drawTarget(targetX, targetY);
+    drawTarget(target);
 
     //ball.update(force());
     ball.update(orientationEvent);

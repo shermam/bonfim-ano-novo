@@ -6,8 +6,8 @@ export let touches = [];
 
 function setTouchList(e) {
     //e.preventDefault();
-    for (const t of e.touches) {
-        touches.push(t);
-    }
-    //touches = e.touches;
+    // for (const t of e.touches) {
+    //     touches.push(t);
+    // }
+    touches = e.touches;
 }
