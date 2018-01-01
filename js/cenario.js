@@ -3,6 +3,10 @@ import { rect, canvas } from "./canvas.js";
 const lineCount = 10;
 
 export function drawCenario() {
+    createCenario();
+}
+
+function createCenario() {
     const lineHeight = canvas.height / lineCount;
     const columnCount = canvas.width / lineHeight;
 

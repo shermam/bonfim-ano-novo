@@ -9,3 +9,8 @@ export function limit(num, min, max) {
 
     return num;
 }
+
+export function map(num, fromBegin, fromEnd, toBegin, toEnd) {
+    const factor = (toEnd - toBegin) / (fromEnd - fromBegin);
+    return ((num - fromBegin) * factor) + toBegin;
+}

@@ -4,18 +4,18 @@ import { handleMouse } from "./handleMouse.js";
 import { ball } from "./ball.js";
 import { orientationEvent } from "./handleOrientation.js";
 import { drawCenario } from "./cenario.js";
+import { force } from "./mouseForce.js";
 
 
 update(deltaTime => {
 
-
-    ball.update(orientationEvent);
+    ball.update(force());
     ball.draw();
 
     handleTouches();
     drawCenario();
 
-    //handleMouse();
+    handleMouse();
 
 });
 
