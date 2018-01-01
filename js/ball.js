@@ -1,19 +1,19 @@
 import { limit } from "./math.js";
 import { circle, rect } from "./canvas.js";
 import { touches } from "./touch.js";
-import { touchRadiusFactor } from "./handleTouches.js";
 import Vec from "./vec.js";
 
 export default class Ball {
 
-    constructor(pos, radius) {
+    constructor(pos, radius, color) {
         this.pos = pos;
         this.vel = new Vec(0, 0);
         this.acc = new Vec(0, 0);
         this.radius = radius;
+        this.color = color;
     }
 
-    update(orientationEvent) {
+    update(orientationEvent, balls) {
 
         if (orientationEvent) {
 
@@ -29,13 +29,13 @@ export default class Ball {
         let newX = limit(this.pos.x + this.vel.x, 0, innerWidth - this.radius);
         let newY = limit(this.pos.y + this.vel.y, 0, innerHeight - (this.radius + 50));
 
-        if (!this.isTouchingX(newX, touches)) {
+        if (!this.isTouchingX(newX, touches.concat(balls))) {
             this.pos.x = newX;
         } else {
             this.resetX();
         }
 
-        if (!this.isTouchingY(newY, touches)) {
+        if (!this.isTouchingY(newY, touches.concat(balls))) {
             this.pos.y = newY;
         } else {
             this.resetY();
@@ -56,7 +56,7 @@ export default class Ball {
             this.pos.y,
             this.radius,
             this.radius,
-            'red'
+            this.color
         );
     }
 
@@ -70,37 +70,41 @@ export default class Ball {
         this.acc.y = 0;
     }
 
-    isTouchingX(newX, touches) {
+    isTouchingX(newX, otherBalls) {
 
-        if (!touches) {
+        if (!otherBalls) {
             return false;
         }
 
-        for (const touch of touches) {
+        for (const otherBall of otherBalls) {
+
+            if (otherBall === this) {
+                return false;
+            }
 
             const ballRight = newX + this.radius;
             const ballLeft = newX;
             const ballTop = this.pos.y;
             const ballBottom = this.pos.y + this.radius;
 
-            const touchRight = touch.pageX + touch.radiusX * touchRadiusFactor;
-            const touchLeft = touch.pageX;
-            const touchTop = touch.pageY;
-            const touchBottom = touch.pageY + touch.radiusX * touchRadiusFactor;
+            const otherBallRight = otherBall.pos.x + otherBall.radius;
+            const otherBallLeft = otherBall.pos.x;
+            const otherBallTop = otherBall.pos.y;
+            const otherBallBottom = otherBall.pos.y + otherBall.radius;
 
-            if (ballBottom >= touchTop &&
-                ballTop <= touchBottom) {
+            if (ballBottom >= otherBallTop &&
+                ballTop <= otherBallBottom) {
 
                 if (this.acc.x > 0 &&
-                    ballRight >= touchLeft &&
-                    ballLeft <= touchRight
+                    ballRight >= otherBallLeft &&
+                    ballLeft <= otherBallRight
                 ) {
                     return true;
                 }
 
                 if (this.acc.x < 0 &&
-                    ballLeft <= touchRight &&
-                    ballRight >= touchLeft
+                    ballLeft <= otherBallRight &&
+                    ballRight >= otherBallLeft
                 ) {
                     return true;
                 }
@@ -109,37 +113,41 @@ export default class Ball {
         }
     }
 
-    isTouchingY(newY, touches) {
+    isTouchingY(newY, otherBalls) {
 
-        if (!touches) {
+        if (!otherBalls) {
             return false;
         }
 
-        for (const touch of touches) {
+        for (const otherBall of otherBalls) {
+
+            if (otherBall === this) {
+                return false;
+            }
 
             const ballRight = this.pos.x + this.radius;
             const ballLeft = this.pos.x;
             const ballTop = newY;
             const ballBottom = newY + this.radius;
 
-            const touchRight = touch.pageX + touch.radiusX * touchRadiusFactor;
-            const touchLeft = touch.pageX;
-            const touchTop = touch.pageY;
-            const touchBottom = touch.pageY + touch.radiusX * touchRadiusFactor;
+            const otherBallRight = otherBall.pos.x + otherBall.radius;
+            const otherBallLeft = otherBall.pos.x;
+            const otherBallTop = otherBall.pos.y;
+            const otherBallBottom = otherBall.pos.y + otherBall.radius;
 
-            if (ballRight >= touchLeft &&
-                ballLeft <= touchRight) {
+            if (ballRight >= otherBallLeft &&
+                ballLeft <= otherBallRight) {
 
                 if (this.acc.y > 0 &&
-                    ballBottom >= touchTop &&
-                    ballTop <= touchBottom
+                    ballBottom >= otherBallTop &&
+                    ballTop <= otherBallBottom
                 ) {
                     return true;
                 }
 
                 if (this.acc.y < 0 &&
-                    ballTop <= touchBottom &&
-                    ballBottom >= touchTop
+                    ballTop <= otherBallBottom &&
+                    ballBottom >= otherBallTop
                 ) {
                     return true;
                 }

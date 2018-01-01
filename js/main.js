@@ -10,18 +10,29 @@ import { random } from "./math.js";
 import Vec from "./vec.js";
 
 const target = new Vec(random(0, innerWidth), random(0, innerHeight));
-const ball = new Ball(new Vec(300, 300), 100);
+
+const balls = [];
+for (let i = 0; i < 300; i++) {
+    balls.push(new Ball(new Vec(random(0, innerWidth), random(0, innerHeight)), 10, 'green'));
+}
+
+//const ball = new Ball(new Vec(300, 300), 100);
 
 update(deltaTime => {
 
     drawTarget(target);
 
     //ball.update(force());
-    ball.update(orientationEvent);
-    ball.draw();
+
+    for (const ball of balls) {
+
+        ball.update(orientationEvent, balls);
+        ball.draw();
+    }
 
     handleTouches();
-    drawCenario();
+
+    //drawCenario();
 
     //handleMouse();
 

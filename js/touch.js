@@ -1,13 +1,19 @@
+import Ball from "./ball.js";
+import Vec from "./vec.js";
+
 export let touches = [];
 
-['touchstart'].forEach(evName => {
-    addEventListener(evName, setTouchList);
-});
+const touchRadiusFactor = 100;
 
-function setTouchList(e) {
-    //e.preventDefault();
-    // for (const t of e.touches) {
-    //     touches.push(t);
-    // }
-    touches = e.touches;
-}
+addEventListener('touchstart', e => {
+    touches = [];
+    for (const touch of e.touches) {
+        touches.push(
+            new Ball(
+                new Vec(touch.pageX, touch.pageY),
+                touch.radiusX * touchRadiusFactor,
+                'red'
+            )
+        );
+    }
+});
