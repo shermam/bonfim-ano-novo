@@ -79,7 +79,7 @@ export default class Ball {
         for (const otherBall of otherBalls) {
 
             if (otherBall === this) {
-                return false;
+                continue;
             }
 
             const ballRight = newX + this.radius;
@@ -122,7 +122,7 @@ export default class Ball {
         for (const otherBall of otherBalls) {
 
             if (otherBall === this) {
-                return false;
+                continue;
             }
 
             const ballRight = this.pos.x + this.radius;
@@ -156,4 +156,3 @@ export default class Ball {
         }
     }
 };
-

@@ -22,17 +22,18 @@ update(deltaTime => {
 
     drawTarget(target);
 
-    //ball.update(force());
+
 
     for (const ball of balls) {
 
+        //ball.update(force(), balls);
         ball.update(orientationEvent, balls);
         ball.draw();
     }
 
     handleTouches();
 
-    //drawCenario();
+    drawCenario();
 
     //handleMouse();
 
