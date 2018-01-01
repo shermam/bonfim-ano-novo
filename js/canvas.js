@@ -5,14 +5,14 @@
  * 
  * @type { HTMLCanvasElement }
  */
-const canvas = document.querySelector('canvas');
+export const canvas = document.querySelector('canvas');
 
 /**
  * Context reference
  * 
  * @type { CanvasRenderingContext2D }
  */
-const context = canvas.getContext('2d');
+export const context = canvas.getContext('2d');
 
 /**
  * Time of the previous execution of the draw function

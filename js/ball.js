@@ -40,11 +40,11 @@ export const ball = {
             resetY(this);
         }
 
-        if (ball.x === 0 || ball.x === innerWidth) {
+        if (ball.x === 0 || ball.x === innerWidth - ball.radius) {
             resetX(this);
         }
 
-        if (ball.y === 0 || ball.y === innerHeight) {
+        if (ball.y === 0 || ball.y === innerHeight - (ball.radius + 50)) {
             resetY(this);
         }
     },
