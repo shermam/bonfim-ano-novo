@@ -4,7 +4,45 @@ export default class Vec {
         this.y = y;
     }
 
-    add(vec2) {
-        return new Vec(this.x + vec2.x, this.y + ve2.y)
+    add(factor) {
+        if (this.isVector(factor)) {
+            this.x += factor.x;
+            this.y += factor.y;
+        } else if (typeof factor === 'number') {
+            this.x += factor;
+            this.y += factor;
+        }
+
+        return this;
+    }
+
+    multiply(factor) {
+        if (this.isVector(factor)) {
+            this.x *= factor.x;
+            this.y *= factor.y;
+        } else if (typeof factor === 'number') {
+            this.x *= factor;
+            this.y *= factor;
+        }
+
+        return this;
+    }
+
+    set(factor) {
+        if (this.isVector(factor)) {
+
+            this.x = factor.x;
+            this.y = factor.y;
+        } else if (typeof factor === 'number') {
+            this.x = factor;
+            this.y = factor;
+        }
+        return this;
+    }
+
+    isVector(factor) {
+        return factor &&
+            typeof factor.x === 'number' &&
+            typeof factor.y === 'number';
     }
 }

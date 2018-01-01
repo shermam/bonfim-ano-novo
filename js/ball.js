@@ -2,147 +2,150 @@ import { limit } from "./math.js";
 import { circle, rect } from "./canvas.js";
 import { touches } from "./touch.js";
 import { touchRadiusFactor } from "./handleTouches.js";
+import Vec from "./vec.js";
 
-export const ball = {
-    x: 300,
-    y: 300,
-    radius: 100,
-    vel: {
-        x: 0,
-        y: 0
-    },
-    acc: {
-        x: 0,
-        y: 0
-    },
-    update: function (orientationEvent) {
+export default class Ball {
+
+    constructor(pos, radius) {
+        this.pos = pos;
+        this.vel = new Vec(0, 0);
+        this.acc = new Vec(0, 0);
+        this.radius = radius;
+    }
+
+    update(orientationEvent) {
 
         if (orientationEvent) {
-            ball.acc.x = - orientationEvent.accelerationIncludingGravity.x * 0.05;
-            ball.acc.y = orientationEvent.accelerationIncludingGravity.y * 0.05;
+
+            this.acc.set(orientationEvent.accelerationIncludingGravity);
+            this.acc.multiply(0.05);
+
+            //hack to invert the x force
+            this.acc.x *= -1;
         }
 
-        ball.vel.x += ball.acc.x;
-        ball.vel.y += ball.acc.y;
+        this.vel.add(this.acc);
 
-        let newX = limit(ball.x + ball.vel.x, 0, innerWidth - ball.radius);
-        let newY = limit(ball.y + ball.vel.y, 0, innerHeight - (ball.radius + 50));
+        let newX = limit(this.pos.x + this.vel.x, 0, innerWidth - this.radius);
+        let newY = limit(this.pos.y + this.vel.y, 0, innerHeight - (this.radius + 50));
 
-        if (!isTouchingX(ball, newX, touches)) {
-            ball.x = newX;
+        if (!this.isTouchingX(newX, touches)) {
+            this.pos.x = newX;
         } else {
-            resetX(this);
+            this.resetX();
         }
 
-        if (!isTouchingY(ball, newY, touches)) {
-            ball.y = newY;
+        if (!this.isTouchingY(newY, touches)) {
+            this.pos.y = newY;
         } else {
-            resetY(this);
+            this.resetY();
         }
 
-        if (ball.x === 0 || ball.x === innerWidth - ball.radius) {
-            resetX(this);
+        if (this.pos.x === 0 || this.pos.x === innerWidth - this.radius) {
+            this.resetX();
         }
 
-        if (ball.y === 0 || ball.y === innerHeight - (ball.radius + 50)) {
-            resetY(this);
+        if (this.pos.y === 0 || this.pos.y === innerHeight - (this.radius + 50)) {
+            this.resetY();
         }
-    },
-    draw: function () {
+    }
+
+    draw() {
         rect(
-            this.x,
-            this.y,
+            this.pos.x,
+            this.pos.y,
             this.radius,
             this.radius,
             'red'
         );
     }
+
+    resetX() {
+        this.vel.x = 0;
+        this.acc.x = 0;
+    }
+
+    resetY() {
+        this.vel.y = 0;
+        this.acc.y = 0;
+    }
+
+    isTouchingX(newX, touches) {
+
+        if (!touches) {
+            return false;
+        }
+
+        for (const touch of touches) {
+
+            const ballRight = newX + this.radius;
+            const ballLeft = newX;
+            const ballTop = this.pos.y;
+            const ballBottom = this.pos.y + this.radius;
+
+            const touchRight = touch.pageX + touch.radiusX * touchRadiusFactor;
+            const touchLeft = touch.pageX;
+            const touchTop = touch.pageY;
+            const touchBottom = touch.pageY + touch.radiusX * touchRadiusFactor;
+
+            if (ballBottom >= touchTop &&
+                ballTop <= touchBottom) {
+
+                if (this.acc.x > 0 &&
+                    ballRight >= touchLeft &&
+                    ballLeft <= touchRight
+                ) {
+                    return true;
+                }
+
+                if (this.acc.x < 0 &&
+                    ballLeft <= touchRight &&
+                    ballRight >= touchLeft
+                ) {
+                    return true;
+                }
+            }
+
+        }
+    }
+
+    isTouchingY(newY, touches) {
+
+        if (!touches) {
+            return false;
+        }
+
+        for (const touch of touches) {
+
+            const ballRight = this.pos.x + this.radius;
+            const ballLeft = this.pos.x;
+            const ballTop = newY;
+            const ballBottom = newY + this.radius;
+
+            const touchRight = touch.pageX + touch.radiusX * touchRadiusFactor;
+            const touchLeft = touch.pageX;
+            const touchTop = touch.pageY;
+            const touchBottom = touch.pageY + touch.radiusX * touchRadiusFactor;
+
+            if (ballRight >= touchLeft &&
+                ballLeft <= touchRight) {
+
+                if (this.acc.y > 0 &&
+                    ballBottom >= touchTop &&
+                    ballTop <= touchBottom
+                ) {
+                    return true;
+                }
+
+                if (this.acc.y < 0 &&
+                    ballTop <= touchBottom &&
+                    ballBottom >= touchTop
+                ) {
+                    return true;
+                }
+            }
+
+        }
+    }
 };
 
-function resetX(ball) {
-    ball.vel.x = 0;
-    ball.acc.x = 0;
-}
-
-function resetY(ball) {
-    ball.vel.y = 0;
-    ball.acc.y = 0;
-}
-
-function isTouchingX(ball, newX, touches) {
-
-    if (!touches) {
-        return false;
-    }
-
-    for (const touch of touches) {
-
-        const ballRight = newX + ball.radius;
-        const ballLeft = newX;
-        const ballTop = ball.y;
-        const ballBottom = ball.y + ball.radius;
-
-        const touchRight = touch.pageX + touch.radiusX * touchRadiusFactor;
-        const touchLeft = touch.pageX;
-        const touchTop = touch.pageY;
-        const touchBottom = touch.pageY + touch.radiusX * touchRadiusFactor;
-
-        if (ballBottom >= touchTop &&
-            ballTop <= touchBottom) {
-
-            if (ball.acc.x > 0 &&
-                ballRight >= touchLeft &&
-                ballLeft <= touchRight
-            ) {
-                return true;
-            }
-
-            if (ball.acc.x < 0 &&
-                ballLeft <= touchRight &&
-                ballRight >= touchLeft
-            ) {
-                return true;
-            }
-        }
-
-    }
-}
-
-function isTouchingY(ball, newY, touches) {
-
-    if (!touches) {
-        return false;
-    }
-
-    for (const touch of touches) {
-
-        const ballRight = ball.x + ball.radius;
-        const ballLeft = ball.x;
-        const ballTop = newY;
-        const ballBottom = newY + ball.radius;
-
-        const touchRight = touch.pageX + touch.radiusX * touchRadiusFactor;
-        const touchLeft = touch.pageX;
-        const touchTop = touch.pageY;
-        const touchBottom = touch.pageY + touch.radiusX * touchRadiusFactor;
-
-        if (ballRight >= touchLeft &&
-            ballLeft <= touchRight) {
-
-            if (ball.acc.y > 0 &&
-                ballBottom >= touchTop &&
-                ballTop <= touchBottom
-            ) {
-                return true;
-            }
-
-            if (ball.acc.y < 0 &&
-                ballTop <= touchBottom &&
-                ballBottom >= touchTop
-            ) {
-                return true;
-            }
-        }
-
-    }
-}
