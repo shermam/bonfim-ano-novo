@@ -1,22 +1,13 @@
-//@ts-check
-
-/**
- * List of touchs from touch event
- * 
- * @type {TouchList}
- */
-export let touches = null;
+export let touches = [];
 
 ['touchstart', 'touchmove'].forEach(evName => {
     addEventListener(evName, setTouchList);
 });
 
-/**
- * Sets the global TouchList to the event's TouchList
- * 
- * @param {TouchEvent} e 
- */
 function setTouchList(e) {
     //e.preventDefault();
-    touches = e.touches;
+    for (const t of e.touches) {
+        touches.push(t);
+    }
+    //touches = e.touches;
 }
