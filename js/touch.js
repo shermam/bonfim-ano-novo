@@ -1,6 +1,6 @@
 export let touches = [];
 
-['touchstart', 'touchmove'].forEach(evName => {
+['touchstart'].forEach(evName => {
     addEventListener(evName, setTouchList);
 });
 
