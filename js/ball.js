@@ -3,6 +3,8 @@ import { circle, rect } from "./canvas.js";
 import { touches } from "./touch.js";
 import Vec from "./vec.js";
 
+const accelerationFactor = 0.1;
+
 export default class Ball {
 
     constructor(pos, radius, color) {
@@ -18,7 +20,7 @@ export default class Ball {
         if (orientationEvent) {
 
             this.acc.set(orientationEvent.accelerationIncludingGravity);
-            this.acc.multiply(0.05);
+            this.acc.multiply(accelerationFactor);
 
             //hack to invert the x force
             this.acc.x *= -1;

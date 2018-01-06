@@ -13,7 +13,7 @@ const target = new Vec(random(0, innerWidth), random(0, innerHeight));
 
 const balls = [];
 for (let i = 0; i < 300; i++) {
-    balls.push(new Ball(new Vec(random(0, innerWidth), random(0, innerHeight)), 10, 'green'));
+    balls.push(new Ball(new Vec(random(0, innerWidth), random(0, innerHeight)), 5, 'green'));
 }
 
 //const ball = new Ball(new Vec(300, 300), 100);
@@ -21,8 +21,6 @@ for (let i = 0; i < 300; i++) {
 update(deltaTime => {
 
     drawTarget(target);
-
-
 
     for (const ball of balls) {
 
